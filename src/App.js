@@ -1,23 +1,34 @@
-import logo from './logo.svg';
+import TodoField from './components/TodoField'
+import TodoItem from './components/TodoItem'
+import TodoDone from './components/TodoDone'
+
 import './App.css';
+import { useState } from 'react'
 
 function App() {
+  const [todoList, setTodoList] = useState([]);
+  const [doneList, setDoneList] = useState([]);
+
+  const getCompleted = (id) => {
+    setTodoList((prevState) => {
+      return prevState.filter((item, idx) => {
+        return idx !== id
+      })
+    })
+    setDoneList((prevState) => {
+      return [...prevState, todoList[id]]
+    })
+  }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TodoField setTodoList={setTodoList} />
+      {todoList && todoList.map((item, idx) => {
+        return (<TodoItem id={idx} item={item} getCompleted={getCompleted}/>)
+      })}
+      <p>done list</p>
+      {doneList && doneList.map((item) => <TodoDone item={item} />)}
     </div>
   );
 }
